@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>팀플 통합 업무 포털</title>
+  <style>
+    :root { --ink:#17263e; --muted:#66758c; --line:#dce4ef; --blue:#245bdb; --bg:#f3f6fb }
+    * { box-sizing:border-box }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Arial,"Malgun Gothic",sans-serif }
+    header { padding:25px max(20px,calc((100% - 1240px)/2)); background:#10233f; color:#fff }
+    header h1 { margin:0 0 7px; font-size:24px }
+    header p { margin:0; color:#d5e1f1 }
+    .wrap { max-width:1240px; margin:20px auto; padding:0 16px }
+    nav { display:flex; gap:7px; border-bottom:1px solid var(--line); overflow:auto }
+    button { font:inherit; cursor:pointer }
+    .tab, .subtab { white-space:nowrap; border:0; background:none; padding:14px 17px; color:var(--muted); font-weight:bold; border-bottom:3px solid transparent }
+    .tab.active, .subtab.active { color:var(--blue); border-color:var(--blue) }
+    #subnav { margin-top:9px }
+    .panel { margin-top:14px; padding:24px; background:#fff; border:1px solid var(--line); border-radius:12px }
+    .panel h2 { margin-top:0 }
+    .panel p, .panel li { line-height:1.65 }
+    .muted { color:var(--muted) }
+    .notice { padding:13px 16px; background:#eef4ff; border-left:4px solid #4d7de5; border-radius:5px }
+    .missing { background:#fff5ed; border-left-color:#c66a24 }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-top:18px }
+    .card { text-align:left; border:1px solid var(--line); border-radius:10px; background:#fff; padding:18px; color:var(--ink) }
+    .card:hover, .card:focus-visible { border-color:var(--blue); outline:2px solid #c6d8ff }
+    .card strong { display:block; margin-bottom:7px }
+    .card span { color:var(--muted); font-size:14px; line-height:1.5 }
+    .frame { display:none; width:100%; height:calc(100vh - 170px); min-height:680px; margin-top:14px; border:1px solid var(--line); border-radius:12px; background:#fff }
+    .frame.active { display:block }
+    [hidden] { display:none !important }
+    @media (max-width:700px) { .tab,.subtab { padding:12px; font-size:13px } .frame { height:78vh; min-height:550px } }
+  </style>
+</head>
+<body>
+  <header><h1>AI 업무지원 통합 포털</h1><p>기존 분석 도구와 보고서 초안을 한곳에서 엽니다.</p></header>
+  <main class="wrap">
+    <nav id="topnav" aria-label="상위 메뉴">
+      <button class="tab active" type="button" data-top="summary" aria-current="page">Summary Dashboard</button>
+      <button class="tab" type="button" data-top="analysis">외부 리포트 분석</button>
+      <button class="tab" type="button" data-top="mail">메일 보고 초안</button>
+    </nav>
+    <nav id="subnav" aria-label="외부 리포트 분석 하위 메뉴" hidden>
+      <button class="subtab" type="button" data-sub="fx">① 환율·금리 분석</button>
+      <button class="subtab" type="button" data-sub="reports">② 운용보고서 분석</button>
+      <button class="subtab" type="button" data-sub="regulations">③ 규제 분석</button>
+      <button class="subtab" type="button" data-sub="market">④ 시장동향 분석</button>
+      <button class="subtab" type="button" data-sub="news">⑤ 뉴스 자동 수집</button>
+    </nav>
+    <section id="summary" class="panel">
+      <h2>Summary Dashboard</h2>
+      <p>분석 기능을 선택하세요. 운용보고서·규제 분석은 AX 화면을, 시장동향·뉴스·메일은 Market Insight 화면을 재사용합니다.</p>
+      <div class="cards">
+        <button class="card" type="button" data-open="reports"><strong>운용보고서 분석</strong><span>PDF 수치·원문 근거 검토 및 Excel 초안</span></button>
+        <button class="card" type="button" data-open="regulations"><strong>규제 분석</strong><span>규제정보 본문 수집·분류</span></button>
+        <button class="card" type="button" data-open="market"><strong>시장동향 분석</strong><span>PDF와 뉴스 자료를 이용한 아젠다 분석</span></button>
+        <button class="card" type="button" data-open="news"><strong>뉴스 자동 수집</strong><span>분석한 PDF의 주제와 분기로 관련 뉴스 URL 검색</span></button>
+        <button class="card" type="button" data-open="mail"><strong>메일 보고 초안</strong><span>Market Insight의 시장동향 분석 결과 반영</span></button>
+      </div>
+      <p class="notice missing"><strong>환율·금리 분석: 연결 파일 누락.</strong> 요청하신 <code>환율금리_실행/환율금리_실행.bat</code>이 현재 자료에 없습니다. 별도 프로그램으로 대체하지 않았습니다.</p>
+    </section>
+    <section id="fx" class="panel" hidden>
+      <h2>환율·금리 분석</h2>
+      <p class="notice missing">요청하신 <code>환율금리_실행/환율금리_실행.bat</code>이 없어 연결할 수 없습니다.</p>
+      <p class="muted">파일이 준비되면 Windows 탐색기에서 배치 파일을 실행해야 합니다. 일반 HTML 페이지에서는 배치 파일을 직접 실행할 수 없습니다.</p>
+    </section>
+    <iframe id="axFrame" class="frame" src="ax.html" title="운용보고서 및 규제 분석" loading="eager"></iframe>
+    <iframe id="miFrame" class="frame" src="market.html" title="시장동향, 뉴스 수집 및 메일 보고 초안" loading="eager"></iframe>
+  </main>
+  <script>
+    const topButtons = [...document.querySelectorAll('[data-top]')];
+    const subButtons = [...document.querySelectorAll('[data-sub]')];
+    const summary = document.getElementById('summary');
+    const fx = document.getElementById('fx');
+    const ax = document.getElementById('axFrame');
+    const mi = document.getElementById('miFrame');
+    const subnav = document.getElementById('subnav');
+    let current = 'summary';
+    function send(frame, view) {
+      frame.dataset.view = view;
+      if (frame.dataset.ready === 'true') frame.contentWindow.postMessage({app:'team-portal',view}, '*');
+    }
+    for (const frame of [ax,mi]) frame.addEventListener('load', () => {
+      frame.dataset.ready = 'true';
+      if (frame.dataset.view) send(frame, frame.dataset.view);
+    });
+    function activate(view, updateHash = true) {
+      current = view;
+      const top = view === 'summary' ? 'summary' : view === 'mail' ? 'mail' : 'analysis';
+      topButtons.forEach(button => {
+        const active = button.dataset.top === top;
+        button.classList.toggle('active',active);
+        if (active) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current');
+      });
+      subnav.hidden = top !== 'analysis';
+      subButtons.forEach(button => button.classList.toggle('active',button.dataset.sub === view));
+      summary.hidden = view !== 'summary';
+      fx.hidden = view !== 'fx';
+      ax.classList.toggle('active',view === 'reports' || view === 'regulations');
+      mi.classList.toggle('active',view === 'market' || view === 'news' || view === 'mail');
+      if (view === 'reports' || view === 'regulations') send(ax,view);
+      if (view === 'market' || view === 'news' || view === 'mail') send(mi,view);
+      if (updateHash) history.replaceState(null,'','#' + view);
+    }
+    topButtons.forEach(button => button.addEventListener('click', () => activate(button.dataset.top === 'analysis' ? 'fx' : button.dataset.top)));
+    subButtons.forEach(button => button.addEventListener('click', () => activate(button.dataset.sub)));
+    document.querySelectorAll('[data-open]').forEach(button => button.addEventListener('click', () => activate(button.dataset.open)));
+    window.addEventListener('hashchange', () => activate(location.hash.slice(1),false));
+    const initial = location.hash.slice(1);
+    activate(['summary','fx','reports','regulations','market','news','mail'].includes(initial) ? initial : 'summary',false);
+  </script>
+</body>
+</html>
+
