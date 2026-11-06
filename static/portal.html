@@ -66,8 +66,8 @@
       <p class="notice missing">요청하신 <code>환율금리_실행/환율금리_실행.bat</code>이 없어 연결할 수 없습니다.</p>
       <p class="muted">파일이 준비되면 Windows 탐색기에서 배치 파일을 실행해야 합니다. 일반 HTML 페이지에서는 배치 파일을 직접 실행할 수 없습니다.</p>
     </section>
-    <iframe id="axFrame" class="frame" src="ax.html" title="운용보고서 및 규제 분석" loading="eager"></iframe>
-    <iframe id="miFrame" class="frame" src="market.html" title="시장동향, 뉴스 수집 및 메일 보고 초안" loading="eager"></iframe>
+    <iframe id="axFrame" class="frame" data-src="ax.html" title="운용보고서 및 규제 분석"></iframe>
+    <iframe id="miFrame" class="frame" data-src="market.html" title="시장동향, 뉴스 수집 및 메일 보고 초안"></iframe>
   </main>
   <script>
     const topButtons = [...document.querySelectorAll('[data-top]')];
@@ -80,9 +80,15 @@
     let current = 'summary';
     function send(frame, view) {
       frame.dataset.view = view;
+      if (frame.dataset.started !== 'true') {
+        frame.dataset.started = 'true';
+        frame.src = frame.dataset.src;
+        return;
+      }
       if (frame.dataset.ready === 'true') frame.contentWindow.postMessage({app:'team-portal',view}, '*');
     }
     for (const frame of [ax,mi]) frame.addEventListener('load', () => {
+      if (frame.dataset.started !== 'true') return;
       frame.dataset.ready = 'true';
       if (frame.dataset.view) send(frame, frame.dataset.view);
     });
