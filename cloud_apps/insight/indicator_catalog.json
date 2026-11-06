@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "description": "공식 통계 API 지표 설정. API 키는 여기에 저장하지 마세요.",
+  "indicators": [
+    {
+      "name": "지역별 주택가격 지표",
+      "domain": "주거 부동산",
+      "provider": "r-one",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://www.reb.or.kr/r-one/portal/openapi/openApiListPage.do",
+      "params": {
+        "statbl_id": "",
+        "cycle": "MM",
+        "region_id": "",
+        "item_id": ""
+      }
+    },
+    {
+      "name": "원/달러 환율",
+      "domain": "환율·금리",
+      "provider": "ecos",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://ecos.bok.or.kr/api/",
+      "params": {
+        "stat_code": "",
+        "item_code": "",
+        "cycle": "M"
+      }
+    },
+    {
+      "name": "NPL·연체 관련 통계",
+      "domain": "NPL",
+      "provider": "kosis",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://kosis.kr/openapi/index/index.jsp",
+      "params": {
+        "org_id": "",
+        "table_id": "",
+        "item_id": "",
+        "class1_id": "",
+        "class2_id": "",
+        "frequency": "Q"
+      }
+    },
+    {
+      "name": "기업금융·금리 지표",
+      "domain": "기업금융",
+      "provider": "ecos",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://ecos.bok.or.kr/api/",
+      "params": {
+        "stat_code": "",
+        "item_code": "",
+        "cycle": "M"
+      }
+    },
+    {
+      "name": "시장금리 또는 기업대출금리",
+      "domain": "환율·금리",
+      "provider": "ecos",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://ecos.bok.or.kr/api/",
+      "params": {
+        "stat_code": "",
+        "item_code": "",
+        "cycle": "M"
+      }
+    },
+    {
+      "name": "해외투자·환율 지표",
+      "domain": "해외투자",
+      "provider": "ecos",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://ecos.bok.or.kr/api/",
+      "params": {
+        "stat_code": "",
+        "item_code": "",
+        "cycle": "M"
+      }
+    },
+    {
+      "name": "산업재 차량·산업 동향 통계",
+      "domain": "산업재 차량",
+      "provider": "kosis",
+      "enabled": false,
+      "aggregation": "last",
+      "risk_direction": "",
+      "source_url": "https://kosis.kr/openapi/index/index.jsp",
+      "params": {
+        "org_id": "",
+        "table_id": "",
+        "item_id": "",
+        "class1_id": "",
+        "class2_id": "",
+        "frequency": "Q"
+      }
+    }
+  ]
+}

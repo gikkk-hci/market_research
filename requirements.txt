@@ -1,1 +1,6 @@
 streamlit==1.67.0
+pandas>=2.2,<3
+plotly>=5.24,<7
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+pypdf>=5,<7

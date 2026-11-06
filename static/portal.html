@@ -16,7 +16,10 @@
     button { font:inherit; cursor:pointer }
     .tab, .subtab { white-space:nowrap; border:0; background:none; padding:14px 17px; color:var(--muted); font-weight:bold; border-bottom:3px solid transparent }
     .tab.active, .subtab.active { color:var(--blue); border-color:var(--blue) }
-    #subnav { margin-top:9px }
+    #subnav { margin-top:9px; flex-wrap:wrap; overflow:visible }
+    .tools { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px }
+    .tools button { padding:10px 14px; color:var(--blue); background:#fff; border:1px solid var(--line); border-radius:7px }
+    .tools p { width:100%; margin:4px 0; font-size:14px; color:var(--muted) }
     .panel { margin-top:14px; padding:24px; background:#fff; border:1px solid var(--line); border-radius:12px }
     .panel h2 { margin-top:0 }
     .panel p, .panel li { line-height:1.65 }
@@ -53,19 +56,23 @@
       <h2>Summary Dashboard</h2>
       <p>분석 기능을 선택하세요. 운용보고서·규제 분석은 AX 화면을, 시장동향·뉴스·메일은 Market Insight 화면을 재사용합니다.</p>
       <div class="cards">
+        <button class="card" type="button" data-open="fx"><strong>환율·금리 분석</strong><span>기존 Python 앱의 공식 API·공개 자료 조회</span></button>
         <button class="card" type="button" data-open="reports"><strong>운용보고서 분석</strong><span>PDF 수치·원문 근거 검토 및 Excel 초안</span></button>
         <button class="card" type="button" data-open="regulations"><strong>규제 분석</strong><span>규제정보 본문 수집·분류</span></button>
         <button class="card" type="button" data-open="market"><strong>시장동향 분석</strong><span>PDF와 뉴스 자료를 이용한 아젠다 분석</span></button>
+        <button class="card" type="button" data-open="indicators"><strong>외부 지표 API 조회</strong><span>팀플의 ECOS·R-ONE·KOSIS 조회, 분기 비교 및 메일 초안</span></button>
         <button class="card" type="button" data-open="news"><strong>뉴스 자동 수집</strong><span>분석한 PDF의 주제와 분기로 관련 뉴스 URL 검색</span></button>
         <button class="card" type="button" data-open="mail"><strong>메일 보고 초안</strong><span>Market Insight의 시장동향 분석 결과 반영</span></button>
       </div>
-      <p class="notice missing"><strong>환율·금리 분석: 연결 파일 누락.</strong> 요청하신 <code>환율금리_실행/환율금리_실행.bat</code>이 현재 자료에 없습니다. 별도 프로그램으로 대체하지 않았습니다.</p>
+      <p class="notice">환율·금리는 기존 Python 앱으로 연결됩니다. 팀플의 외부 지표 API 조회는 <strong>시장동향 분석 → 외부 지표 API 조회</strong>에서도 열 수 있습니다.</p>
     </section>
-    <section id="fx" class="panel" hidden>
-      <h2>환율·금리 분석</h2>
-      <p class="notice missing">요청하신 <code>환율금리_실행/환율금리_실행.bat</code>이 없어 연결할 수 없습니다.</p>
-      <p class="muted">파일이 준비되면 Windows 탐색기에서 배치 파일을 실행해야 합니다. 일반 HTML 페이지에서는 배치 파일을 직접 실행할 수 없습니다.</p>
-    </section>
+    <div id="marketTools" class="tools" hidden>
+      <button type="button" data-open="market">시장동향·PDF 분석</button>
+      <button type="button" data-open="indicators">외부 지표 API 조회</button>
+      <p>외부 지표 분석 결과를 반영한 메일 초안은 API 조회 화면 하단에서 확인하고 다운로드할 수 있습니다.</p>
+    </div>
+    <iframe id="fx" class="frame" data-src="../../?view=fx&amp;embed=true" title="환율·금리 API 분석"></iframe>
+    <iframe id="apiFrame" class="frame" data-src="../../?view=indicators&amp;embed=true" title="팀플 외부 지표 API 조회 및 메일 초안"></iframe>
     <iframe id="axFrame" class="frame" data-src="ax.html" title="운용보고서 및 규제 분석"></iframe>
     <iframe id="miFrame" class="frame" data-src="market.html" title="시장동향, 뉴스 수집 및 메일 보고 초안"></iframe>
   </main>
@@ -76,8 +83,15 @@
     const fx = document.getElementById('fx');
     const ax = document.getElementById('axFrame');
     const mi = document.getElementById('miFrame');
+    const api = document.getElementById('apiFrame');
+    const marketTools = document.getElementById('marketTools');
     const subnav = document.getElementById('subnav');
     let current = 'summary';
+    function start(frame) {
+      if (frame.dataset.started === 'true') return;
+      frame.dataset.started = 'true';
+      frame.src = frame.dataset.src;
+    }
     function send(frame, view) {
       frame.dataset.view = view;
       if (frame.dataset.started !== 'true') {
@@ -101,11 +115,15 @@
         if (active) button.setAttribute('aria-current','page'); else button.removeAttribute('aria-current');
       });
       subnav.hidden = top !== 'analysis';
-      subButtons.forEach(button => button.classList.toggle('active',button.dataset.sub === view));
+      subButtons.forEach(button => button.classList.toggle('active',button.dataset.sub === (view === 'indicators' ? 'market' : view)));
       summary.hidden = view !== 'summary';
-      fx.hidden = view !== 'fx';
+      marketTools.hidden = !['market','indicators','mail'].includes(view);
+      fx.classList.toggle('active',view === 'fx');
+      api.classList.toggle('active',view === 'indicators');
       ax.classList.toggle('active',view === 'reports' || view === 'regulations');
       mi.classList.toggle('active',view === 'market' || view === 'news' || view === 'mail');
+      if (view === 'fx') start(fx);
+      if (view === 'indicators') start(api);
       if (view === 'reports' || view === 'regulations') send(ax,view);
       if (view === 'market' || view === 'news' || view === 'mail') send(mi,view);
       if (updateHash) history.replaceState(null,'','#' + view);
@@ -115,7 +133,7 @@
     document.querySelectorAll('[data-open]').forEach(button => button.addEventListener('click', () => activate(button.dataset.open)));
     window.addEventListener('hashchange', () => activate(location.hash.slice(1),false));
     const initial = location.hash.slice(1);
-    activate(['summary','fx','reports','regulations','market','news','mail'].includes(initial) ? initial : 'summary',false);
+    activate(['summary','fx','reports','regulations','market','indicators','news','mail'].includes(initial) ? initial : 'summary',false);
   </script>
 </body>
 </html>

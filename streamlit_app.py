@@ -1,13 +1,27 @@
 """Streamlit entrypoint for the existing team portal."""
 
 from pathlib import Path
+import runpy
 
 import streamlit as st
 
 
 st.set_page_config(page_title="AI 업무지원 통합 포털", page_icon="📊", layout="wide")
 
-portal_path = Path(__file__).resolve().parent / "static" / "portal.html"
+ROOT = Path(__file__).resolve().parent
+view = st.query_params.get("view", "portal")
+apps = {
+    "fx": ROOT / "cloud_apps" / "fx" / "app.py",
+    "indicators": ROOT / "cloud_apps" / "insight" / "app.py",
+}
+if view in apps:
+    if not apps[view].is_file():
+        st.error("API 프로그램 파일이 없습니다. cloud_apps 폴더를 함께 업로드해 주세요.")
+        st.stop()
+    runpy.run_path(str(apps[view]), run_name="__main__")
+    st.stop()
+
+portal_path = ROOT / "static" / "portal.html"
 if not portal_path.is_file():
     st.error("static/portal.html 파일이 없습니다. GitHub 업로드 경로를 확인해 주세요.")
     st.stop()
